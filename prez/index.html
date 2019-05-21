@@ -1,0 +1,205 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/night.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+		<style>
+		h1.ttn, h2.ttn, h3.ttn, h4.ttn { text-transform: none; }
+		img.noborder {border: 0 !important; box-shadow: none !important; background: transparent!important; }
+		.text-center { text-align: center!important; }
+		.text-left { text-align: left!important; }
+		.print-pdf .reveal img, .print-pdf .reveal video, .print-pdf .reveal iframe {
+			max-width: 800px;
+			max-height: 600px;
+		}
+		</style>
+	</head>
+	<body>
+		<div class="reveal" style="font-size: 28px;">
+			<div class="slides">
+				<section class="center" >
+					<h2 class="ttn">Biztonságos chat-program fejlesztése kriptográfia felhasználásával<h2>
+					<h3 class="ttn"><a href="#">Bordák Tamás</a>, <a href="#">Henczidai Bálint</a></h3>
+					<h2>-</h2>
+					<h4 class="ttn">Önálló laboratórium 1</h4>
+					<h4 class="ttn">Konzulens: Ekler Péter, Kovács Máté</h4>
+				</section>
+				<section>
+					<h2>A választott téma</h2>
+					<div class="text-left">
+						<h3>Motiváció</h3>
+						<ul>
+							<li>Manapság mindenki használ csevegőalkalmazásokat</li>
+							<li>Miket tudunk róluk?</li>
+						</ul>
+						<!--<p class="fragment">Manapság mindenki használ csevegőalkalmazásokat</p>
+						<p class="fragment">DE vajon tudjuk-e, hogy kire bízzuk a legbelsőbb titkainkat</p>-->
+						<h3>Felmerülő kérdések:</h3>
+						<div>
+							<ul>							
+								<li>Kik olvashatják az üzeneteinket?</li>
+								<li>Mit tudhatnak rólunk a nagy cégek?</li>
+								<li>A biztonságos valójában mennyire biztonságos?</li>
+								<li>Mit és hogyan titkosítanak?</li>
+							</ul>
+						</div>
+					</div>
+					<p class="fragment text-center">
+						<b>Ezekre a kérdésekre kerestük a választ!</b>
+					</p>
+					<p class="fragment text-center">
+						... és egy példán keresztül próbáltuk ki, hogy hogyan lehet egy ilyen chat alkalmazást készíteni.
+					</p>
+				</section>
+				<section>
+					<h2>Jelenlegi megoldások</h2>
+					<table>
+						<tr>
+							<td><img class="noborder" width="128" height="128" src="img/messenger.png" alt="FB Messenger"></td>
+							<td><img class="noborder" width="128" height="128" src="img/viber.png" alt="Viber"></td>
+							<td><img class="noborder" width="128" height="128" src="img/whatsapp.png" alt="WhatsApp"></td>
+							<td><img class="noborder" width="128" height="128" src="img/signal.png" alt="Signal"></td>
+							<td><img class="noborder" width="128" height="128" src="img/telegram.png" alt="Telegram"></td>
+						</tr>
+						<tr>
+							<td colspan="4" class="text-center"><hr>Signal protocol</td>
+							<td class="text-center"><hr>MTProto</td>
+						</tr>
+					</table>
+					<br>
+					<div class="text-left">
+						<h3>Kérdések: </h3>
+						<ul >
+							<li>Privát beszélgetés: alapértelmezett?</li>
+							<li>Csoprtos privát beszélgetések?</li>
+							<li>Metaadatok? (kivel, mikor, milyen hosszan)</li>
+							<li>Tárolt üzenetek - felhasználó kompromitálódása esetén?</li>
+						</ul>
+					</div>
+				</section>
+				<section class="text-left">
+					<h2>Megoldandó feladatok</h2>
+					<ul>
+						<li>
+							Üzenetek küldése biztonságosan
+							<ul>
+								<li>... csak a címzett tudja elolvasni</li>
+							</ul>
+						</li>
+						<br>
+						<li>
+							Üzenetek titkosítása kliensoldalon
+							<ul>
+								<li>... böngészőben?!</li>
+								<li>kulcs(ok) generálása, tárolása</li>
+							</ul>
+						</li>
+						<br>
+						<li>
+							Küldött üzenetek hitelesítése
+							<ul>
+								<li>más nevében ne lehessen üzenetet küldeni</li>
+							</ul>
+						</li>
+						<br>
+						<li>
+							Csoportos beszélgetések (2+ résztvevő)
+							<ul>
+								<li>Csoportok kezelése szerver oldalon (kissebb hálózati forgalom)</li>
+								<li>... vagy csak a kliensoldalon (transzparens?)</li>
+							</ul>
+							<ul>
+								<li>Csoport szintű közös titok</li>
+								<li>... vagy felhasználópáronként külön üzenet</li>
+							</ul>
+						</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Az alkalmazás</h2>
+					<div class="fragment text-left">
+						<h3>Szerver</h3>
+						<ul>
+							<li>Valós idejű üzentovábbítás - WebSocket</li>
+							<li>Üzenetek átmeneti tárolása - "offline kézbesítés"</li>
+							<li>Redis alapú üzenetsor</li>
+						</ul>
+					</div>
+					<br>
+					<div class="fragment text-left">
+						<h3>Kliens</h3>
+						<ul>
+							<li>Webes felület - Angular</li>
+							<li>
+								Üzenetek titkosítása és továbbítása a szervernek
+								<ul>
+									<li>Szimmetrikus és asszimmetrikus kulcsú kriptográfia</li>
+									<li>AES, RSA, SHA, ..</li>
+								</ul>
+							</li>
+							<li>Csoportok kezelése</li>
+						</ul>
+					</div>
+				</section>
+				<section>
+					<h2>Működés</h2>
+					<div class="text-left">
+						<h3>Csoport létrehozó üzenet</h3>
+						<ol>
+							<li>Kezdeményező fél felveszi a csoport résztvevőit</li>
+							<li>... és küld nekik egy csoport létrehozása üzenetet</li>
+							<li>A cimzettek fogadják az üzenezet</li>
+							<li>...eldöntik, hogy a kérelmet elfogadják-e</li>
+							<li>Ha igen, akkor onnantol megkapják a csoport üzeneteit</li>
+						</ol>
+					</div>
+					<br>
+					<div class="text-left">
+						<h3>Chat üzenet</h3>
+						<ol>
+							<li>Küldő rejtjelezi az üzenetet (véletlen választott szimmetrikus kulcs segítségével)</li>
+							<li>Minden résztvevőnek elküldi a rejtjelezett üzenetet</li>
+							<li>... és a kulcsot a címzettek publikus kulcsaival titkosítva</li>
+						</ol>
+					</div>
+				</section>
+				<section>
+					<h2>Üzenetek küldése és fogadása</h2>
+					<img src="img/mqueue.png" alt="Üzenetsor">
+				</section>
+				<section>
+					<h2>Köszönjük a figyelmet!<h2>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				history: true,
+			});
+		</script>
+	</body>
+</html>
