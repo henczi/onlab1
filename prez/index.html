@@ -134,11 +134,33 @@
 					</ul>
 				</section>
 				<section>
+					<h2>Működés</h2>
+					<div class="text-left">
+						<h3>Csoport létrehozó üzenet</h3>
+						<ol>
+							<li>Kezdeményező fél felveszi a csoport résztvevőit</li>
+							<li>... és küld nekik egy csoport létrehozása üzenetet</li>
+							<li>A cimzettek fogadják az üzenezet</li>
+							<li>...eldöntik, hogy a kérelmet elfogadják-e</li>
+							<li>Ha igen, akkor onnantol megkapják a csoport üzeneteit</li>
+						</ol>
+					</div>
+					<br>
+					<div class="text-left">
+						<h3>Chat üzenet</h3>
+						<ol>
+							<li>Küldő rejtjelezi az üzenetet (véletlen választott szimmetrikus kulcs segítségével)</li>
+							<li>Minden résztvevőnek elküldi a rejtjelezett üzenetet</li>
+							<li>... és a kulcsot a címzettek publikus kulcsaival titkosítva</li>
+						</ol>
+					</div>
+				</section>
+				<section>
 					<h2>Az alkalmazás</h2>
 					<div class="fragment text-left">
 						<h3>Szerver</h3>
 						<ul>
-							<li>Valós idejű üzentovábbítás - WebSocket</li>
+							<li>Valós idejű üzenettovábbítás - WebSocket</li>
 							<li>Üzenetek átmeneti tárolása - "offline kézbesítés"</li>
 							<li>Redis alapú üzenetsor</li>
 						</ul>
@@ -160,26 +182,32 @@
 					</div>
 				</section>
 				<section>
-					<h2>Működés</h2>
-					<div class="text-left">
-						<h3>Csoport létrehozó üzenet</h3>
-						<ol>
-							<li>Kezdeményező fél felveszi a csoport résztvevőit</li>
-							<li>... és küld nekik egy csoport létrehozása üzenetet</li>
-							<li>A cimzettek fogadják az üzenezet</li>
-							<li>...eldöntik, hogy a kérelmet elfogadják-e</li>
-							<li>Ha igen, akkor onnantol megkapják a csoport üzeneteit</li>
-						</ol>
-					</div>
-					<br>
-					<div class="text-left">
-						<h3>Chat üzenet</h3>
-						<ol>
-							<li>Küldő rejtjelezi az üzenetet (véletlen választott szimmetrikus kulcs segítségével)</li>
-							<li>Minden résztvevőnek elküldi a rejtjelezett üzenetet</li>
-							<li>... és a kulcsot a címzettek publikus kulcsaival titkosítva</li>
-						</ol>
-					</div>
+					<h2>Üzenetek küldése és fogadása</h2>
+					<ul>
+						<li>
+							Üzenetek küldése a szervernek (Üzenetsorba írás)
+							<ul>
+								<li>Címzetteknek "címezve"</li>
+								<li>Címek: publikus kulcs hash</li>
+							</ul>
+						</li>
+						<br>
+						<li>
+							Üzenetek fogadása (Üzenetsorból olvasás)
+							<ul>
+								<li>Kliensek feliratkoznak a címükhöz tartozó üzenetsorra</li>
+								<li>Az üzenetsorba érkező üzeneteket a szerver továbbitja</li>
+							</ul>
+						</li>
+						<br>
+						<li>
+							Offline küldött üzenetek tárolása
+							<ul>
+								<li>Üzenetsorban, időrenben</li>
+								<li>Csatlakozáskor szinkronizál</li>
+							</ul>
+						</li>
+					</ul>
 				</section>
 				<section>
 					<h2>Üzenetek küldése és fogadása</h2>
@@ -223,7 +251,17 @@
 					</table>
 				</section>
 				<section>
-					<h2>Köszönjük a figyelmet!<h2>
+					<h2>Köszönjük a figyelmet!</h2>
+				</section>
+				<section>
+					<h2>Továbbfejlesztési lehetőségek</h2>
+						<ul>
+							<li>Több kulcs használata, különböző célokra!</li>
+							<li>Forward secrecy (kliens kompromitálódása esetén)</li>
+							<li>Future secrecy ("önjavító" eljárás)</li>
+							<li>Felületi javítások (kényelmesebb felhasználói élmány)</li>
+							<li>Médiatartalmak támogatása (kép, videó, stb.. küldése)</li>
+						</ul>
 				</section>
 			</div>
 		</div>
